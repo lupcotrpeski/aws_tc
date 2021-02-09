@@ -8,6 +8,12 @@ else:
     import tkFileDialog as filedialog
 
 import csv
+from docx import Document
+from docx.shared import Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx2pdf import convert
+
+
 
 
 def process_file(filename):
@@ -58,14 +64,19 @@ def process_file(filename):
                         instructor_sum = instructor_sum + column_sum[pos]
 
             output += '\n'
-            output += '%.2f' % (float(instructor_sum) / float(instructor_div)) + '\t' + 'Instructor CSAT' + '\n'
-            output += '%.2f' % (float(overall_sum) / float(overall_div)) + '\t' + 'Overall CSAT' + '\n'
+            instructure_csat = '%.2f' % (float(instructor_sum) / float(instructor_div))
+            overall_csat = '%.2f' % (float(overall_sum) / float(overall_div))
+            output += instructure_csat + '\t' + 'Instructor CSAT' + '\n'
+            output += overall_csat + '\t' + 'Overall CSAT' + '\n'
             output += '\n'
             output += 'Recommended Changes' + '\n'
             output += '-------------------' + '\n'
             output += feedback
             results.delete("1.0", tk.END)
             results.insert(tk.END, output)
+
+            # Generate Word Document
+            generate_docx(feedback, instructure_csat, overall_csat)
     except:
         results.insert(tk.END, "There is a problem with that file.")
 
@@ -79,6 +90,54 @@ def get_file_name():
 def copy_text():
     r.clipboard_clear()
     r.clipboard_append(results.get("1.0", tk.END))
+
+def generate_docx(feedback, instructure_csat, overall_csat):
+
+    document = Document()
+
+    document.add_picture('logo.png', width=Inches(1.25))
+    paragraph = document.add_paragraph("Class Report", style='Heading 1')
+    paragraph_format = paragraph.paragraph_format
+    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+
+    table = document.add_table(rows=3, cols=4)
+    hdr_cells = table.rows[0].cells
+    hdr_cells[0].text = 'Class Name'
+    hdr_cells[1].text = ''
+    hdr_cells[2].text = 'Class Location'
+    hdr_cells[3].text = ''
+    hdr_cells = table.rows[1].cells
+    hdr_cells[0].text = 'Class Type'
+    hdr_cells[1].text = ''
+    hdr_cells[2].text = 'Trainer'
+    hdr_cells[3].text = ''
+    hdr_cells = table.rows[2].cells
+    hdr_cells[0].text = 'Start Date'
+    hdr_cells[1].text = ''
+    hdr_cells[2].text = 'End Date'
+    hdr_cells[3].text = ''
+
+    #document.add_paragraph( results.get("1.0", tk.END) )
+
+    document.add_heading('Evaluation Summary:', level=2)
+    table = document.add_table(rows=2, cols=4)
+    hdr_cells = table.rows[0].cells
+    hdr_cells[0].text = 'Class Room'
+    hdr_cells[1].text = ''
+    hdr_cells[2].text = 'Content'
+    hdr_cells[3].text = ''
+    hdr_cells = table.rows[1].cells
+    hdr_cells[0].text = 'Instructor'
+    hdr_cells[1].text = instructure_csat
+    hdr_cells[2].text = 'Overall Satisfaction'
+    hdr_cells[3].text = overall_csat
+
+    document.add_heading('Student Feedback:', level=2)
+    document.add_paragraph( feedback )
+
+    document.save('classreport.docx')
+    convert("classreport.docx", "classreport.pdf")
+
 
 
 # set-up window
@@ -94,6 +153,15 @@ fileOpenPath.grid(column=0, row=0, padx=5, pady=5, sticky=tk.W)
 results = tk.Text(r, width=100, height=45)
 results.grid(column=0, row=2, padx=5, pady=5, sticky=tk.W)
 results.config(wrap=tk.WORD)
+
+
+fileOpenPath = tk.Button(r, text='Output to DOCX',
+                         command=lambda: generate_docx())
+fileOpenPath.grid(column=0, row=0, padx=5, pady=5, sticky=tk.E)
+
+fileOpenPath = tk.Button(r, text='Output to PDF',
+                         command=lambda: convert("classreport.docx", "classreport.pdf"))
+fileOpenPath.grid(column=0, row=1, padx=5, pady=5, sticky=tk.E)
 
 copy = tk.Button(r, text='Copy all to clipboard', command=lambda: copy_text())
 copy.grid(column=0, row=3, padx=5, pady=5, sticky=tk.W)
