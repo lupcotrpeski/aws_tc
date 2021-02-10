@@ -48,6 +48,8 @@ def process_file(filename):
 
             instructor_sum = 0
             instructor_div = 0
+            content_sum = 0
+            content_div = 0
             overall_sum = 0
             overall_div = 0
 
@@ -62,12 +64,18 @@ def process_file(filename):
                     if 'instructor' in question[pos]:
                         instructor_div = instructor_div + val
                         instructor_sum = instructor_sum + column_sum[pos]
+                    if 'content' in question[pos]:
+                        content_div = content_div + val
+                        content_sum = content_sum + column_sum[pos]
 
             output += '\n'
             instructure_csat = '%.2f' % (float(instructor_sum) / float(instructor_div))
             overall_csat = '%.2f' % (float(overall_sum) / float(overall_div))
             output += instructure_csat + '\t' + 'Instructor CSAT' + '\n'
             output += overall_csat + '\t' + 'Overall CSAT' + '\n'
+            output += '%.2f' % (float(instructor_sum) / float(instructor_div)) + '\t' + 'Instructor CSAT' + '\n'
+            output += '%.2f' % (float(content_sum) / float(content_div)) + '\t' + 'Content CSAT' + '\n'
+            output += '%.2f' % (float(overall_sum) / float(overall_div)) + '\t' + 'Overall CSAT' + '\n'
             output += '\n'
             output += 'Recommended Changes' + '\n'
             output += '-------------------' + '\n'
