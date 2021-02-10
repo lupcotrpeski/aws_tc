@@ -1,4 +1,9 @@
 import sys
+import csv
+from docx import Document
+from docx.shared import Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx2pdf import convert
 
 if (sys.version_info > (3, 0)):
     import tkinter as tk
@@ -6,14 +11,6 @@ if (sys.version_info > (3, 0)):
 else:
     import Tkinter as tk
     import tkFileDialog as filedialog
-
-import csv
-from docx import Document
-from docx.shared import Inches
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx2pdf import convert
-
-
 
 
 def process_file(filename):
@@ -99,6 +96,7 @@ def copy_text():
     r.clipboard_clear()
     r.clipboard_append(results.get("1.0", tk.END))
 
+
 def generate_docx(feedback, instructure_csat, overall_csat):
 
     document = Document()
@@ -125,7 +123,7 @@ def generate_docx(feedback, instructure_csat, overall_csat):
     hdr_cells[2].text = 'End Date'
     hdr_cells[3].text = ''
 
-    #document.add_paragraph( results.get("1.0", tk.END) )
+    # document.add_paragraph( results.get("1.0", tk.END) )
 
     document.add_heading('Evaluation Summary:', level=2)
     table = document.add_table(rows=2, cols=4)
@@ -141,11 +139,10 @@ def generate_docx(feedback, instructure_csat, overall_csat):
     hdr_cells[3].text = overall_csat
 
     document.add_heading('Student Feedback:', level=2)
-    document.add_paragraph( feedback )
+    document.add_paragraph(feedback)
 
     document.save('classreport.docx')
     convert("classreport.docx", "classreport.pdf")
-
 
 
 # set-up window
