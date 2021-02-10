@@ -148,7 +148,7 @@ def generate_docx(feedback, instructure_csat, overall_csat):
 # set-up window
 global r, output
 r = tk.Tk()
-r.title('AWS T&C CSAT Evaluation v1.1')
+r.title('AWS T&C CSAT Evaluation v2.0')
 r.geometry("820x820")
 
 fileOpenPath = tk.Button(r, text='Choose a raw evaluation file',
