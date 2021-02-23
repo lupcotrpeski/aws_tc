@@ -1,0 +1,68 @@
+version: 0.2
+
+env:
+  variables:
+    IMAGE_REPO_NAME: "freefood"
+    DOCKER_ACCOUNT: "ltrpeski"
+  secrets-manager:
+    DOCKER_TOKEN: DOCKER_TOKEN:DOCKER_TOKEN
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - echo Get Amazon Account Id...
+      - AWS_ACCOUNT_ID=`aws sts get-caller-identity | jq '.Account' | sed 's/\"//g'`
+      - |-
+        ECR_VERSION=`aws ecr list-images --repository-name ${IMAGE_REPO_NAME} | jq '.imageIds[].imageTag' | sed 's/\"//g'`
+        if [[ -n $ECR_VERSION ]]
+        then
+          ECR_MAJOR=`printf '%s\n' ${ECR_VERSION} | cut -f 1 -d . | sort -n -r | awk NR==1`
+          ECR_MINOR=`printf '%s\n' ${ECR_VERSION} | cut -f 2 -d . | sort -n -r | awk NR==1`
+          docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${MAJOR}.${MINOR}
+        else
+            ECR_MAJOR=0
+            ECR_MINOR=0
+        fi
+        echo "ECR Version is ${ECR_MAJOR}.${ECR_MINOR}"
+      - |-
+        echo ${DOCKER_TOKEN} | docker login --username ${DOCKER_ACCOUNT} --password-stdin
+
+        DOCKERHUB_VERSION=`wget -q https://registry.hub.docker.com/v1/repositories/${DOCKER_ACCOUNT}/${IMAGE_REPO_NAME}/tags -O -  | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n' | awk -F: '{print $3}'`
+        if [[ -n $DOCKERHUB_VERSION ]]
+        then
+          DOCKERHUB_MAJOR=`printf '%s\n' ${DOCKERHUB_VERSION} | cut -f 1 -d . | sort -n -r | awk NR==1`
+          DOCKERHUB_MINOR=`printf '%s\n' ${DOCKERHUB_VERSION} | cut -f 2 -d . | sort -n -r | awk NR==1`
+          docker pull ${DOCKER_ACCOUNT}/${IMAGE_REPO_NAME}:${MAJOR}.${MINOR}
+        else
+          DOCKERHUB_MAJOR=0
+          DOCKERHUB_MINOR=0
+        fi
+        echo "Docker Hub Version is ${DOCKERHUB_MAJOR}.${DOCKERHUB_MINOR}"
+      - |-
+        LATEST_VERSION=`printf '%s\n' ${DOCKERHUB_MAJOR}.${DOCKERHUB_MINOR} ${ECR_MAJOR}.${ECR_MINOR} | sort -r --version-sort | head -1`
+        MAJOR=`printf '%s\n' ${LATEST_VERSION} | cut -f 1 -d .`
+        MINOR=`printf '%s\n' ${LATEST_VERSION} | cut -f 2 -d .`
+
+        echo "Latest Version is ${LATESTVERSION}"
+        echo "Pulling the latest version of the image..."
+        docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${MAJOR}.${MINOR} || docker pull ${DOCKER_ACCOUNT}/${IMAGE_REPO_NAME}:${MAJOR}.${MINOR}
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - let MINOR=${MINOR}+1
+      - docker build -t ${IMAGE_REPO_NAME}:${MAJOR}.${MINOR} .
+      - echo Tagging the image for ECR...
+      - docker tag ${IMAGE_REPO_NAME}:${MAJOR}.${MINOR} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${MAJOR}.${MINOR}
+      - echo Tagging the image for Docker Hub...
+      - docker tag ${IMAGE_REPO_NAME}:${MAJOR}.${MINOR} ${DOCKER_ACCOUNT}/${IMAGE_REPO_NAME}:${MAJOR}.${MINOR}
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image to ECR...
+      - docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${MAJOR}.${MINOR}
+      - echo Pushing the Docker image to Docker Hub...
+      - docker push ${DOCKER_ACCOUNT}/${IMAGE_REPO_NAME}:${MAJOR}.${MINOR}

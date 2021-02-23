@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+{% block title %}T&C Class Report Generator{% endblock %}
+{% block body %}
+<div class="jumbotron">
+  <h1>T&C Class Report Generator</h1>
+  <h2>Upload CSV File</h2>
+  <form action = "/uploader" method = "POST" 
+    enctype = "multipart/form-data">
+    <input type = "file" name = "file" />
+    <input type = "submit" value="Upload File"/>
+  </form>  
+  <h2>Generate Report</h2>
+  <form method="POST">
+    <label for="className" class="lead">Class Name:</label>
+    <input type="text" id="className" name="className"><br><br>
+    <label for="classLocation" class="lead">Class Location:</label>
+    <input type="text" id="classLocation" name="classLocation"><br><br>
+    <label for="classType" class="lead">Class Type:</label>
+    <input type="text" id="classType" name="classType"><br><br>
+    <label for="trainer" class="lead">Trainer:</label>
+    <input type="text" id="trainer" name="trainer"><br><br>
+    <label for="startDate" class="lead">Start Date:</label>
+    <input type="text" id="startDate" name="startDate"><br><br>
+    <label for="endDate" class="lead">End Date:</label>
+    <input type="text" id="endDate" name="endDate"><br><br>
+    <input type="submit" value="Generate Report">
+  </form>
+</div>
+{% endblock %}
