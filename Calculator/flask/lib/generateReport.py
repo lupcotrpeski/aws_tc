@@ -1,5 +1,6 @@
 from __future__ import print_function  # Python 2/3 compatibility
 import json
+import os
 import requests
 from lib.getEnvVariable import getEnvVariable
 import sys
@@ -19,7 +20,7 @@ class GenerateReport:
            'Authorization': 'None'}
 
 
-    def __init__(self, fileName, className, classLocation, classType, trainer, startDate, endDate):
+    def __init__(self, filePath, fileName, className, classLocation, classType, trainer, startDate, endDate):
         self.fileName = fileName
         self.className = className
         self.trainer = trainer
@@ -27,6 +28,7 @@ class GenerateReport:
         self.classType = classType
         self.startDate = startDate
         self.endDate = endDate
+        self.filePath = filePath
 
 
     def generateReport(self):
@@ -34,8 +36,16 @@ class GenerateReport:
         return "Fudged"
 
     def process_file(self):
+        print("Process FileName = ",self.fileName)
         try:
-            with open(self.fileName, mode='r') as evalfile:
+            csvFile = self.filePath + self.fileName
+            docxFile = self.filePath + os.path.splitext(self.fileName)[0] + ".docx"
+            pdfFile = self.filePath + os.path.splitext(self.fileName)[0] + ".pdf"
+            print("CSV: ", csvFile)
+            print("PDF: ", pdfFile)
+            print("DOCX: ", docxFile)
+
+            with open(csvFile, mode='r') as evalfile:
                 reader = csv.reader(evalfile)
                 ncols = len(next(reader)) + 1
                 evalfile.seek(0)
@@ -100,14 +110,17 @@ class GenerateReport:
                 print( output)
 
                 # Generate Word Document
-                self.generate_docx(feedback, instructure_csat, overall_csat)
+                print("Generate the Word Document")
+                self.generate_docx(docxFile, pdfFile, feedback, instructure_csat, overall_csat)
         except:
             print( "There is a problem with that file.")
 
-    def generate_docx(self, feedback, instructure_csat, overall_csat):
+    def generate_docx(self, docxFile, pdfFile, feedback, instructure_csat, overall_csat):
+        print("PDF: ", pdfFile)
+        print("DOCX: ", docxFile)
         document = Document()
 
-        document.add_picture('logo.png', width=Inches(1.25))
+        #document.add_picture('logo.png', width=Inches(1.25))
         paragraph = document.add_paragraph("Class Report", style='Heading 1')
         paragraph_format = paragraph.paragraph_format
         paragraph_format.alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -147,6 +160,6 @@ class GenerateReport:
         document.add_heading('Student Feedback:', level=2)
         document.add_paragraph(feedback)
 
-        document.save('classreport.docx')
-        convert("classreport.docx", "classreport.pdf")
+        document.save(docxFile)
+        convert(docxFile, pdfFile)
 

@@ -38,8 +38,8 @@ if [ -e /debug1 ]; then
 	echo "Running app in debug mode!"
 	python3 app.py
 else
-	echo "Start Amazon x-ray logging"
-	xray-daemon --region $AWS_DEFAULT_REGION -f /var/log/xray-daemon.log &
+	# echo "Start Amazon x-ray logging"
+	# xray-daemon --region $AWS_DEFAULT_REGION -f /var/log/xray-daemon.log &
 	echo "Running app in production mode!"
 	nginx && uwsgi --ini /app.ini
 fi

@@ -5,10 +5,11 @@
 <div class="jumbotron">
   <h1>T&C Class Report Generator</h1>
   <h2>Upload CSV File</h2>
-  <form action = "/uploader" method = "POST" 
+  <form action = "/uploads" method = "POST" 
     enctype = "multipart/form-data">
-    <input type = "file" name = "file" />
-    <input type = "submit" value="Upload File"/>
+    <input type ="file" name ="file" />
+    <input type ="submit" value="Upload File"/>
+    <p> {{ fileName }} uploaded</p>
   </form>  
   <h2>Generate Report</h2>
   <form method="POST">
@@ -26,5 +27,10 @@
     <input type="text" id="endDate" name="endDate"><br><br>
     <input type="submit" value="Generate Report">
   </form>
+  <div class="container" align="left">
+    <a href="{{ url_for('download', filename='xero.csv') }}" target="blank"><button class='btn btn-default'>Download CSV</button></a>
+    <a href="{{ url_for('download', filename='xero.pdf') }}" target="blank"><button class='btn btn-default'>Download PDF</button></a>
+    <a href="{{ url_for('download', filename='xero.docx') }}" target="blank"><button class='btn btn-default'>Download DOCX</button></a>
+  </div>
 </div>
 {% endblock %}
