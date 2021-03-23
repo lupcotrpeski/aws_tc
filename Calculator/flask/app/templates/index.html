@@ -7,27 +7,97 @@
   <h2>Upload CSV File</h2>
   <form action = "/uploads" method = "POST" 
     enctype = "multipart/form-data">
-    <input type ="file" name ="file" />
+    <input type ="file" name ="file" /><br>
     <input type ="submit" value="Upload File"/>
     <p> {{ fileName }} uploaded</p>
   </form>  
   <h2>Generate Report</h2>
-  <form method="POST">
+  <form action = "/" method="POST">
     <label for="className" class="lead">Class Name:</label>
-    <input type="text" id="className" name="className"><br><br>
+    <select name="className" id="className">
+      <option value="Advanced Architecting in AWS Classified Regions"> Advanced Architecting in AWS Classified Regions</option>
+      <option value="Advanced Architecting on AWS"> Advanced Architecting on AWS</option>
+      <option value="Advanced Developing on AWS"> Advanced Developing on AWS</option>
+      <option value="Architecting on AWS"> Architecting on AWS</option>
+      <option value="Architecting on AWS Accelerator"> Architecting on AWS Accelerator</option>
+      <option value="Artificial Intelligence/Machine Learning Practical Use Cases on AWS for the US Intelligence Community"> Artificial Intelligence/Machine Learning Practical Use Cases on AWS for the US Intelligence Community</option>
+      <option value="Associate Architecting & SysOps on AWS"> Associate Architecting & SysOps on AWS</option>
+      <option value="AWS Business Essentials"> AWS Business Essentials</option>
+      <option value="AWS Cloud Financial Management for Builders"> AWS Cloud Financial Management for Builders</option>
+      <option value="AWS Cloud Practitioner Essentials"> AWS Cloud Practitioner Essentials</option>
+      <option value="AWS Practical Startup Workshop (JAPAN ONLY)"> AWS Practical Startup Workshop (JAPAN ONLY)</option>
+      <option value="AWS Security Essentials"> AWS Security Essentials</option>
+      <option value="AWS Security Fundamentals"> AWS Security Fundamentals</option>
+      <option value="AWS Technical Essentials"> AWS Technical Essentials</option>
+      <option value="AWS Technical Essentials for US Federal Government"> AWS Technical Essentials for US Federal Government</option>
+      <option value="Big Data and ML on AWS"> Big Data and ML on AWS</option>
+      <option value="Big Data on AWS"> Big Data on AWS</option>
+      <option value="Building a Serverless Data Lake on AWS"> Building a Serverless Data Lake on AWS</option>
+      <option value="Building An AWS Cloud Adoption Business Case"> Building An AWS Cloud Adoption Business Case</option>
+      <option value="Building Data Lakes on AWS"> Building Data Lakes on AWS</option>
+      <option value="Building Serverless Compliance-as-Code"> Building Serverless Compliance-as-Code</option>
+      <option value="Cost Optimization on AWS"> Cost Optimization on AWS</option>
+      <option value="Data Science with Amazon SageMaker"> Data Science with Amazon SageMaker</option>
+      <option value="Data Warehousing on AWS"> Data Warehousing on AWS</option>
+      <option value="Deep Learning on AWS"> Deep Learning on AWS</option>
+      <option value="Developing in AWS Classified Regions"> Developing in AWS Classified Regions</option>
+      <option value="Developing on AWS"> Developing on AWS</option>
+      <option value="Developing Serverless Solutions on AWS"> Developing Serverless Solutions on AWS</option>
+      <option value="DevOps Engineering in AWS Classified Regions"> DevOps Engineering in AWS Classified Regions</option>
+      <option value="DevOps Engineering on AWS"> DevOps Engineering on AWS</option>
+      <option value="Exam Readiness Intensive Workshop: AWS Certified Solutions Architect - Associate"> Exam Readiness Intensive Workshop: AWS Certified Solutions Architect - Associate</option>
+      <option value="Exam Readiness: AWS Certified Advanced Networking - Specialty"> Exam Readiness: AWS Certified Advanced Networking - Specialty</option>
+      <option value="Exam Readiness: AWS Certified Alexa Skill Builder - Specialty"> Exam Readiness: AWS Certified Alexa Skill Builder - Specialty</option>
+      <option value="Exam Readiness: AWS Certified Data Analytics - Specialty"> Exam Readiness: AWS Certified Data Analytics - Specialty</option>
+      <option value="Exam Readiness: AWS Certified Database - Specialty"> Exam Readiness: AWS Certified Database - Specialty</option>
+      <option value="Exam Readiness: AWS Certified Developer - Associate"> Exam Readiness: AWS Certified Developer - Associate</option>
+      <option value="Exam Readiness: AWS Certified DevOps Engineer - Professional"> Exam Readiness: AWS Certified DevOps Engineer - Professional</option>
+      <option value="Exam Readiness: AWS Certified Machine Learning - Specialty"> Exam Readiness: AWS Certified Machine Learning - Specialty</option>
+      <option value="Exam Readiness: AWS Certified Security Specialty"> Exam Readiness: AWS Certified Security Specialty</option>
+      <option value="Exam Readiness: AWS Certified Solutions Architect - Associate"> Exam Readiness: AWS Certified Solutions Architect - Associate</option>
+      <option value="Exam Readiness: AWS Certified Solutions Architect - Professional"> Exam Readiness: AWS Certified Solutions Architect - Professional</option>
+      <option value="Exam Readiness: AWS Certified SysOps Administrator - Associate"> Exam Readiness: AWS Certified SysOps Administrator - Associate</option>
+      <option value="IoT in Scale: How to Monitor and Manage an IoT Solution using AWS Services Bootcamp"> IoT in Scale: How to Monitor and Manage an IoT Solution using AWS Services Bootcamp</option>
+      <option value="Media Essentials for IT Business Decision Makers"> Media Essentials for IT Business Decision Makers</option>
+      <option value="Migrating to AWS"> Migrating to AWS</option>
+      <option value="Moving to AWS Serverless"> Moving to AWS Serverless</option>
+      <option value="Planning and Designing Databases on AWS"> Planning and Designing Databases on AWS</option>
+      <option value="Practical Data Science with Amazon SageMaker"> Practical Data Science with Amazon SageMaker</option>
+      <option value="Predict the Future with Time Series Forecasting and Deep Neural Networks Bootcamp"> Predict the Future with Time Series Forecasting and Deep Neural Networks Bootcamp</option>
+      <option value="Running Container-Enabled Microservices on AWS"> Running Container-Enabled Microservices on AWS</option>
+      <option value="Running Containers on Amazon Elastic Kubernetes Service (Amazon EKS)"> Running Containers on Amazon Elastic Kubernetes Service (Amazon EKS)</option>
+      <option value="Secrets to Successful Cloud Transformation"> Secrets to Successful Cloud Transformation</option>
+      <option value="Security Engineering on AWS"> Security Engineering on AWS</option>
+      <option value="Serverless and AWS Lambda in AWS Classified Regions"> Serverless and AWS Lambda in AWS Classified Regions</option>
+      <option value="Systems Operations in AWS Classified Regions"> Systems Operations in AWS Classified Regions</option>
+      <option value="Systems Operations on AWS"> Systems Operations on AWS</option>
+      <option value="Technical Essentials in AWS Classified Regions"> Technical Essentials in AWS Classified Regions</option>
+      <option value="The Machine Learning Pipeline on AWS"> The Machine Learning Pipeline on AWS</option>
+      <option value="Other">Other</option>
+    </select><br><br>
     <label for="classLocation" class="lead">Class Location:</label>
     <input type="text" id="classLocation" name="classLocation"><br><br>
     <label for="classType" class="lead">Class Type:</label>
-    <input type="text" id="classType" name="classType"><br><br>
+    <select name="classType" id="classType">
+      <option value="Private">Private</option>
+      <option value="Public">Public</option>
+    </select><br><br>
+    <label for="startDate" class="lead">Start Date:</label>
+    <input type="date" id="startDate" name="startDate"><br><br>
+    <label for="endDate" class="lead">End Date:</label>
+    <input type="date" id="endDate" name="endDate"><br><br>
     <label for="trainer" class="lead">Trainer:</label>
     <input type="text" id="trainer" name="trainer"><br><br>
-    <label for="startDate" class="lead">Start Date:</label>
-    <input type="text" id="startDate" name="startDate"><br><br>
-    <label for="endDate" class="lead">End Date:</label>
-    <input type="text" id="endDate" name="endDate"><br><br>
-    <input type="submit" value="Generate Report">
+    <label for="trainerSummary" class="lead">Trainer Summary:</label>
+    <br>
+    <textarea id="trainerSummary" name="trainerSummary" rows="4" cols="80">Enter any notes you want to leave about the class here.
+    </textarea><br><br>
+    <input type="submit" value="Generate Report" name="fileName" id="fileName" value="{{ fileName }}"><br><br>
   </form>
   <div class="container" align="left">
+    <!-- <a href="{{ url_for('download', filename=fileName) }}" target="blank"><button class='btn btn-default'>Download CSV</button></a>
+    <a href="{{ url_for('download', filename=fileName) }}" target="blank"><button class='btn btn-default'>Download PDF</button></a>
+    <a href="{{ url_for('download', filename=fileName) }}" target="blank"><button class='btn btn-default'>Download DOCX</button></a> -->
     <a href="{{ url_for('download', filename='xero.csv') }}" target="blank"><button class='btn btn-default'>Download CSV</button></a>
     <a href="{{ url_for('download', filename='xero.pdf') }}" target="blank"><button class='btn btn-default'>Download PDF</button></a>
     <a href="{{ url_for('download', filename='xero.docx') }}" target="blank"><button class='btn btn-default'>Download DOCX</button></a>

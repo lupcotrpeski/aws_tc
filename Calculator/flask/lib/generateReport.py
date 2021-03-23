@@ -9,6 +9,7 @@ from docx import Document
 from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx2pdf import convert
+from flask import current_app
 
 
 class GenerateReport:
@@ -20,32 +21,25 @@ class GenerateReport:
            'Authorization': 'None'}
 
 
-    def __init__(self, filePath, fileName, className, classLocation, classType, trainer, startDate, endDate):
+    def __init__(self, filePath, fileName, className, classLocation, classType, trainer, trainerSummary, startDate, endDate):
         self.fileName = fileName
         self.className = className
         self.trainer = trainer
+        self.trainerSummary = trainerSummary
         self.classLocation = classLocation
         self.classType = classType
         self.startDate = startDate
         self.endDate = endDate
         self.filePath = filePath
+        self.csvFile = self.filePath + self.fileName
+        self.docxFile = self.filePath + os.path.splitext(self.fileName)[0] + ".docx"
+        self.pdfFile = self.filePath + os.path.splitext(self.fileName)[0] + ".pdf"
 
 
     def generateReport(self):
-        self.process_file()
-        return "Fudged"
-
-    def process_file(self):
         print("Process FileName = ",self.fileName)
         try:
-            csvFile = self.filePath + self.fileName
-            docxFile = self.filePath + os.path.splitext(self.fileName)[0] + ".docx"
-            pdfFile = self.filePath + os.path.splitext(self.fileName)[0] + ".pdf"
-            print("CSV: ", csvFile)
-            print("PDF: ", pdfFile)
-            print("DOCX: ", docxFile)
-
-            with open(csvFile, mode='r') as evalfile:
+            with open(self.csvFile, mode='r') as evalfile:
                 reader = csv.reader(evalfile)
                 ncols = len(next(reader)) + 1
                 evalfile.seek(0)
@@ -107,20 +101,22 @@ class GenerateReport:
                 output += 'Recommended Changes' + '\n'
                 output += '-------------------' + '\n'
                 output += feedback
-                print( output)
+                print(output)
 
                 # Generate Word Document
                 print("Generate the Word Document")
-                self.generate_docx(docxFile, pdfFile, feedback, instructure_csat, overall_csat)
+                self.generate_docx(feedback, instructure_csat, overall_csat)
+                print("Generate the PDF")
+                self.generate_pdf()
         except:
             print( "There is a problem with that file.")
+        return os.path.splitext(self.fileName)[0]
 
-    def generate_docx(self, docxFile, pdfFile, feedback, instructure_csat, overall_csat):
-        print("PDF: ", pdfFile)
-        print("DOCX: ", docxFile)
+    def generate_docx(self, feedback, instructure_csat, overall_csat):
         document = Document()
-
-        #document.add_picture('logo.png', width=Inches(1.25))
+        logo = os.path.join(current_app.root_path) + '/logo.png'
+        print("Logo: ", logo)
+        document.add_picture(logo, width=Inches(1.25))
         paragraph = document.add_paragraph("Class Report", style='Heading 1')
         paragraph_format = paragraph.paragraph_format
         paragraph_format.alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -128,19 +124,19 @@ class GenerateReport:
         table = document.add_table(rows=3, cols=4)
         hdr_cells = table.rows[0].cells
         hdr_cells[0].text = 'Class Name'
-        hdr_cells[1].text = ''
+        hdr_cells[1].text = self.className
         hdr_cells[2].text = 'Class Location'
-        hdr_cells[3].text = ''
+        hdr_cells[3].text = self.classLocation
         hdr_cells = table.rows[1].cells
         hdr_cells[0].text = 'Class Type'
-        hdr_cells[1].text = ''
+        hdr_cells[1].text = self.classType
         hdr_cells[2].text = 'Trainer'
-        hdr_cells[3].text = ''
+        hdr_cells[3].text = self.trainer
         hdr_cells = table.rows[2].cells
         hdr_cells[0].text = 'Start Date'
-        hdr_cells[1].text = ''
+        hdr_cells[1].text = self.startDate
         hdr_cells[2].text = 'End Date'
-        hdr_cells[3].text = ''
+        hdr_cells[3].text = self.endDate
 
         # document.add_paragraph( results.get("1.0", tk.END) )
 
@@ -157,9 +153,14 @@ class GenerateReport:
         hdr_cells[2].text = 'Overall Satisfaction'
         hdr_cells[3].text = overall_csat
 
+        document.add_heading('Trainer Summary:', level=2)
+        document.add_paragraph(self.trainerSummary)
+
         document.add_heading('Student Feedback:', level=2)
         document.add_paragraph(feedback)
 
-        document.save(docxFile)
-        convert(docxFile, pdfFile)
+        document.save(self.docxFile)
+
+    def generate_pdf(self):
+        convert(self.docxFile, self.pdfFile)
 

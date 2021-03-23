@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 import logging
 from lib.getEnvVariable import getEnvVariable
 # from aws_xray_sdk.core import xray_recorder
@@ -28,4 +28,5 @@ from app import views
 # Load the config file
 app.config.from_object('config')
 app.config['UPLOAD_FOLDER'] = uploadDirectory
-
+app.config['SESSION_TYPE'] = 'memcached'
+app.config['SECRET_KEY'] = 'super secret key'
