@@ -29,4 +29,4 @@ from app import views
 app.config.from_object('config')
 app.config['UPLOAD_FOLDER'] = uploadDirectory
 app.config['SESSION_TYPE'] = 'memcached'
-app.config['SECRET_KEY'] = 'super secret key'
+app.config['SECRET_KEY'] = '$up3r$3cretK$y!'

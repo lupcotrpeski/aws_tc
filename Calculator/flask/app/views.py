@@ -22,7 +22,6 @@ def index():
 @app.route('/', methods = ['GET', 'POST'])
 def indexPost():
     fileName=session.get('fileName', None)
-    print("Index Filename 1: ",fileName)
     className = request.form['className']
     classLocation = request.form['classLocation']
     classType = request.form['classType']
@@ -32,7 +31,7 @@ def indexPost():
     endDate = request.form['endDate']
     filePath = os.path.join(current_app.root_path, app.config['UPLOAD_FOLDER'])
     fileName = GenerateReport(filePath, fileName, className, classLocation, classType, trainer, trainerSummary, startDate, endDate).generateReport()
-    print("Index Filename 2: ",fileName)
+    print("Filename: ",fileName)
     return render_template('index.html', fileName=fileName)
 	
 @app.route('/uploads', methods = ['GET', 'POST'])
@@ -44,8 +43,11 @@ def upload_file():
            return redirect(request.url)
         if f and allowed_file(f.filename):
             filename = secure_filename(f.filename)
+            # Works in flask run
             f.save(os.path.join("app/" + app.config['UPLOAD_FOLDER'], filename))
+            # Works in docker
             session['fileName'] = filename
+            filename=os.path.splitext(filename)[0]
     return render_template('index.html', fileName=filename, response='file uploaded successfully')
 
 @app.route('/uploads/<path:filename>', methods=['GET', 'POST'])

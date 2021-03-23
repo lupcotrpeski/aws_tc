@@ -95,12 +95,9 @@
     <input type="submit" value="Generate Report" name="fileName" id="fileName" value="{{ fileName }}"><br><br>
   </form>
   <div class="container" align="left">
-    <!-- <a href="{{ url_for('download', filename=fileName) }}" target="blank"><button class='btn btn-default'>Download CSV</button></a>
-    <a href="{{ url_for('download', filename=fileName) }}" target="blank"><button class='btn btn-default'>Download PDF</button></a>
-    <a href="{{ url_for('download', filename=fileName) }}" target="blank"><button class='btn btn-default'>Download DOCX</button></a> -->
-    <a href="{{ url_for('download', filename='xero.csv') }}" target="blank"><button class='btn btn-default'>Download CSV</button></a>
-    <a href="{{ url_for('download', filename='xero.pdf') }}" target="blank"><button class='btn btn-default'>Download PDF</button></a>
-    <a href="{{ url_for('download', filename='xero.docx') }}" target="blank"><button class='btn btn-default'>Download DOCX</button></a>
+    <a href=/uploads/{{ fileName }}.csv target="blank"><button class='btn btn-default'>Download CSV</button></a>
+    <a href=/uploads/{{ fileName }}.pdf target="_blank" target="blank"><button class='btn btn-default'>Download PDF</button></a>
+    <a href=/uploads/{{ fileName }}.docx target="_blank" target="blank"><button class='btn btn-default'>Download DOCX</button></a>
   </div>
 </div>
 {% endblock %}

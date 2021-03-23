@@ -1,10 +1,6 @@
 from __future__ import print_function  # Python 2/3 compatibility
-import json
-import os
-import requests
+import os, sys, csv, json, requests
 from lib.getEnvVariable import getEnvVariable
-import sys
-import csv
 from docx import Document
 from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -162,5 +158,6 @@ class GenerateReport:
         document.save(self.docxFile)
 
     def generate_pdf(self):
-        convert(self.docxFile, self.pdfFile)
+        if sys.platform!='linux':
+            convert(self.docxFile, self.pdfFile)
 
