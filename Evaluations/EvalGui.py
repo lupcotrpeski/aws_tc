@@ -47,8 +47,11 @@ def process_file(filename):
             instructor_div = 0
             content_sum = 0
             content_div = 0
+            environment_sum = 0
+            environment_div = 0
             overall_sum = 0
             overall_div = 0
+
 
             output = 'Number of responses: ' + str(row_position - 2) + '\n\n'
 
@@ -58,12 +61,18 @@ def process_file(filename):
                     output += '%.2f' % (float(column_sum[pos]) / float(val)) + '\t' + question[pos] + '\n'
                     overall_div = overall_div + val
                     overall_sum = overall_sum + column_sum[pos]
-                    if 'instructor' in question[pos]:
+                    if question[pos].find('instructor') != -1:
+                    #if 'instructor' in question[pos]:
                         instructor_div = instructor_div + val
                         instructor_sum = instructor_sum + column_sum[pos]
-                    if 'content' in question[pos]:
+                    if question[pos].find('content') != -1 or question[pos].find('course length') != -1:    
+                    #if 'content' in question[pos]:
                         content_div = content_div + val
                         content_sum = content_sum + column_sum[pos]
+                    if question[pos].find('virtual delivery') != -1 or question[pos].find('virtual classroom') != -1:   
+                    #if 'virtual delivery' in question[pos]:
+                        environment_div = environment_div + val
+                        environment_sum = environment_sum + column_sum[pos]
 
             output += '\n'
             instructure_csat = '%.2f' % (float(instructor_sum) / float(instructor_div))
@@ -72,6 +81,7 @@ def process_file(filename):
             output += overall_csat + '\t' + 'Overall CSAT' + '\n'
             output += '%.2f' % (float(instructor_sum) / float(instructor_div)) + '\t' + 'Instructor CSAT' + '\n'
             output += '%.2f' % (float(content_sum) / float(content_div)) + '\t' + 'Content CSAT' + '\n'
+            output += '%.2f' % (float(environment_sum) / float(environment_div)) + '\t' + 'Environment CSAT' + '\n'
             output += '%.2f' % (float(overall_sum) / float(overall_div)) + '\t' + 'Overall CSAT' + '\n'
             output += '\n'
             output += 'Recommended Changes' + '\n'
